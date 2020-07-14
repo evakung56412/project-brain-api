@@ -17,7 +17,7 @@ import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
-@EqualsAndHashCode(exclude = "ideas")
+@EqualsAndHashCode(exclude = {"ideas", "followers", "todos"})
 public class Brain {
 	
 	@Id
@@ -35,7 +35,8 @@ public class Brain {
 	@Column(unique = false, nullable = false)
 	private String password;
 	
-	// TODO: Whatever info u want
+	// Whatever info u want
+	// TODO: country or location
 	@Column(unique = false, nullable = true)
 	private String firstName;	
 	@Column(unique = false, nullable = true)
@@ -45,8 +46,13 @@ public class Brain {
 	@JsonIgnore
 	private Set<Idea> ideas;
 	
-	// This gonna be a loop, need to think if it can store to db
-//	@ManyToMany
-//	private Set<Brain> followers;
+	// TODO: This will be a loop, need to think if it can store to db
+	@ManyToMany
+	@JsonIgnore
+	private Set<Brain> followers;
+	
+	@OneToMany
+	@JsonIgnore
+	private Set<Idea> todos;
 
 }

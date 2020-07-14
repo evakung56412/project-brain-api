@@ -32,6 +32,5 @@ public class Idea {
 	private String content;
 	
 	@ManyToOne
-	@JsonIgnore
 	private Brain author;
 }
