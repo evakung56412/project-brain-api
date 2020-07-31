@@ -5,8 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.evakung.projectbrainapi.form.NewIdeaForm;
-import com.evakung.projectbrainapi.form.TodoForm;
+import com.evakung.projectbrainapi.form.IdeaForm;
 import com.evakung.projectbrainapi.model.Brain;
 import com.evakung.projectbrainapi.model.Idea;
 import com.evakung.projectbrainapi.repository.BrainRepository;
@@ -25,12 +24,13 @@ public class RelationalController {
 	}
 	
 	@PostMapping("/assign/idea")
-	public Idea assignIdeaToBrain(@RequestBody NewIdeaForm newIdeaForm) {
+	public Idea assignIdeaToBrain(@RequestBody IdeaForm newIdeaForm) {
 		
 		try {
 			Brain brain = brainRepository.findOneByUsername(newIdeaForm.getUsername()).orElseThrow();
 			
 			Idea idea = new Idea();
+			idea.setCiteId(newIdeaForm.getCiteId());
 			idea.setTitle(newIdeaForm.getTitle());
 			idea.setContext(newIdeaForm.getContext());
 			idea.setContent(newIdeaForm.getContent());
@@ -48,17 +48,25 @@ public class RelationalController {
 	}
 	
 	@PostMapping("/assign/todo")
-	public Brain assignTodoToBrain(@RequestBody TodoForm todoForm) {
+	public Idea assignTodoToBrain(@RequestBody IdeaForm todoForm) {
 		try {
-			Idea todo = ideaRepository.findById(todoForm.getIdeaId()).orElseThrow();
 			Brain brain = brainRepository.findOneByUsername(todoForm.getUsername()).orElseThrow();
+			
+			Idea todo = new Idea();
+			todo.setCiteId(todoForm.getCiteId());
+			todo.setTitle(todoForm.getTitle());
+			todo.setContext(todoForm.getContext());
+			todo.setContent(todoForm.getContent());
+			todo.setAuthor(brain);
+			
+			ideaRepository.save(todo);
 			
 			brain.getTodos().add(todo);
 			brainRepository.save(brain);
-			return brainRepository.save(brain);
+			return todo;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new Brain();
+			return new Idea();
 		}
 	}
 }
