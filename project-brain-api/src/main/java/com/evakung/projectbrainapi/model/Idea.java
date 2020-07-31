@@ -19,8 +19,10 @@ public class Idea {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonIgnore
 	private long id;
+	
+	@Column(unique = false, nullable = true)
+	private String citeId;
 	
 	@Column(unique = false, nullable = false)
 	private String title;
